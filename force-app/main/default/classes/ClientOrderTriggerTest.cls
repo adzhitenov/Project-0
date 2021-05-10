@@ -53,6 +53,8 @@ private class ClientOrderTriggerTest {
     @isTest
     private static void ClientOrderTriggerTest_Unhandled_Unexpired() {
 
+        //Single record test, deletion should NOT be possible
+
         System.debug('Start of first test method: ' + [SELECT Id FROM Client_Order__c].size());
     
         Client_Order__c test1 = new Client_Order__c(Handled__c = false,
@@ -70,6 +72,8 @@ private class ClientOrderTriggerTest {
         System.debug('Part 1 of first test method: ' + [SELECT Id FROM Client_Order__c].size());
         
         System.assert([SELECT Id FROM Client_Order__c].size() != 0);
+
+        //Bulk records test, deletion should NOT be possible
 
         List<Client_Order__c> bulkTestData1 = new List<Client_Order__c>();
 
@@ -98,6 +102,8 @@ private class ClientOrderTriggerTest {
     @isTest
     private static void ClientOrderTriggerTest_Handled_Unexpired() {
 
+        //Single record test, deletion should be possible
+
         System.debug('Start of second test method: ' + [SELECT Id FROM Client_Order__c].size());
 
         Client_Order__c test2 = new Client_Order__c(Handled__c = true,
@@ -113,6 +119,8 @@ private class ClientOrderTriggerTest {
         }
 
         System.assert([SELECT Id FROM Client_Order__c].size() == 0);
+
+        //Bulk records test, deletion should be possible
 
         List<Client_Order__c> bulkTestData2 = new List<Client_Order__c>();
 
@@ -141,15 +149,15 @@ private class ClientOrderTriggerTest {
     @isTest
     private static void ClientOrderTriggerTest_Handled_Expired() {
 
-        System.debug('Start of second test method: ' + [SELECT Id FROM Client_Order__c].size());
+        //Single records test, should be deleted
 
-        Client_Order__c test2 = new Client_Order__c(Handled__c = true,
-        Date_Due__c = Date.Today()+7);
-        insert test2;
+        Client_Order__c test3 = new Client_Order__c(Handled__c = true,
+        Date_Due__c = Date.Today()-7, TEST__c = true);
+        insert test3;
         System.assert([SELECT Id FROM Client_Order__c].size() == 1);
 
         try{
-            delete test2;
+            delete test3;
         }
         catch (DmlException e){
             System.debug('DML exception raised in first test method.');
@@ -157,16 +165,18 @@ private class ClientOrderTriggerTest {
 
         System.assert([SELECT Id FROM Client_Order__c].size() == 0);
 
-        List<Client_Order__c> bulkTestData2 = new List<Client_Order__c>();
+        //Bulk records test, should be deleted
+
+        List<Client_Order__c> bulkTestData3 = new List<Client_Order__c>();
 
         for (integer iii=0; iii<300; ++iii){
 
-            Client_Order__c testOrder2 = new Client_Order__c(Handled__c = true,
-            Date_Due__c = Date.Today()+7);
-            bulkTestData2.add(testOrder2);
+            Client_Order__c testOrder3 = new Client_Order__c(Handled__c = true,
+            Date_Due__c = Date.Today()-7, TEST__c = true);
+            bulkTestData3.add(testOrder3);
         }
 
-        insert bulkTestData2;
+        insert bulkTestData3;
 
         for (List<Client_Order__c> testList : [SELECT Id FROM Client_Order__c]){
             try{
@@ -181,7 +191,49 @@ private class ClientOrderTriggerTest {
 
     }
 
+    @isTest
     private static void ClientOrderTriggerTest_Unhandled_Expired() {
+
+        //Single record test, should be deleted
+
+        Client_Order__c test4 = new Client_Order__c(Handled__c = false,
+        Date_Due__c = Date.Today()-7, TEST__c = true);
+        insert test4;
+        System.assert([SELECT Id FROM Client_Order__c].size() == 1);
+
+        try{
+            delete test4;
+        }
+        catch (DmlException e){
+            System.debug('DML exception raised in first test method.');
+        }
+
+        System.debug('Start of first test method: ' + [SELECT Id FROM Client_Order__c].size());
+        System.assert([SELECT Id FROM Client_Order__c].size() == 0);
+
+        //Bulk records test, should be deleted
+
+        List<Client_Order__c> bulkTestData4 = new List<Client_Order__c>();
+
+        for (integer iii=0; iii<300; ++iii){
+
+            Client_Order__c testOrder4 = new Client_Order__c(Handled__c = false,
+            Date_Due__c = Date.Today()-7, TEST__c = true);
+            bulkTestData4.add(testOrder4);
+        }
+
+        insert bulkTestData4;
+
+        for (List<Client_Order__c> testList : [SELECT Id FROM Client_Order__c]){
+            try{
+                delete testList;
+            }
+            catch (DmlException e){
+                System.debug('DML exception raised in second test method.');
+            }
+        }
+
+        System.assert([SELECT Id FROM Client_Order__c].size() == 0);
 
     }
 
