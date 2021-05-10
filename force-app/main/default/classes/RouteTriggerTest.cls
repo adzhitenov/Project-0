@@ -32,7 +32,7 @@ private class RouteTriggerTest {
 
         List<Route__c> newRoutes = new List<Route__c>();
 
-        for (integer iii=0; iii<20; ++iii){
+        for (integer iii=0; iii<300; ++iii){
             Route__c r = new Route__c(Name = 'Test ' + iii, Number_of_Stops__c = iii/20);
             newRoutes.add(r);
         }
