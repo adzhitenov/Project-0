@@ -14,6 +14,11 @@ private class UserTriggerTest {
         update testUser;
         System.assert([SELECT AssigneeId, PermissionSet.Name FROM PermissionSetAssignment 
                         WHERE AssigneeId = :testUser.Id AND PermissionSet.Name = 'Accounting_Standard'].size() != 0);
+
+        setTestUserRole();
+
+        System.assert([SELECT AssigneeId, PermissionSet.Name FROM PermissionSetAssignment 
+                        WHERE AssigneeId = :testUser.Id AND PermissionSet.Name = 'Accounting_Standard'].size() == 0);
     }
     @isTest
     private static void accountingAdminPermissionsTest() {
@@ -23,6 +28,11 @@ private class UserTriggerTest {
         update testUser;
         System.assert([SELECT AssigneeId, PermissionSet.Name FROM PermissionSetAssignment 
                         WHERE AssigneeId = :testUser.Id AND PermissionSet.Name = 'Accounting_Admin'].size() != 0);
+
+        setTestUserRole();
+
+        System.assert([SELECT AssigneeId, PermissionSet.Name FROM PermissionSetAssignment 
+                        WHERE AssigneeId = :testUser.Id AND PermissionSet.Name = 'Accounting_Admin'].size() == 0);                
     }
     @isTest
     private static void mechanicPermissionsTest() {
@@ -32,5 +42,10 @@ private class UserTriggerTest {
         update testUser;
         System.assert([SELECT AssigneeId, PermissionSet.Name FROM PermissionSetAssignment 
                         WHERE AssigneeId = :testUser.Id AND PermissionSet.Name = 'Mechanic'].size() != 0);
+        
+        setTestUserRole();
+
+        System.assert([SELECT AssigneeId, PermissionSet.Name FROM PermissionSetAssignment 
+                                        WHERE AssigneeId = :testUser.Id AND PermissionSet.Name = 'Mechanic'].size() == 0);
     }
 }

@@ -36,4 +36,24 @@ trigger UserTrigger on User (after update) {
         }
     }
 
+    for (User u : trigger.old){
+        if (u.IsActive){
+            if (u.UserRoleId == [SELECT Id FROM UserRole WHERE Name = 'Accountant'].Id){
+                PermissionSetAssignment psa = [SELECT AssigneeId, PermissionSet.Name FROM PermissionSetAssignment 
+                WHERE AssigneeId = :u.Id AND PermissionSet.Name = 'Accounting_Standard'];
+                delete psa;
+            }
+            if (u.UserRoleId == [SELECT Id FROM UserRole WHERE Name = 'Accounting Admin'].Id){
+                PermissionSetAssignment psa = [SELECT AssigneeId, PermissionSet.Name FROM PermissionSetAssignment 
+                WHERE AssigneeId = :u.Id AND PermissionSet.Name = 'Accounting_Admin'];
+                delete psa;
+            }
+            if (u.UserRoleId == [SELECT Id FROM UserRole WHERE Name = 'Mechanic'].Id){
+                PermissionSetAssignment psa = [SELECT AssigneeId, PermissionSet.Name FROM PermissionSetAssignment 
+                WHERE AssigneeId = :u.Id AND PermissionSet.Name = 'Mechanic'];
+                delete psa;
+            }
+        }
+    }
+
 }
