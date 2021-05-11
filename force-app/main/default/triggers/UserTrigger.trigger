@@ -7,12 +7,12 @@ trigger UserTrigger on User (after update) {
 //        System.debug(u.UserRoleId);
 
         if (u.IsActive)
-            UserTriggerHelper.usersAddedToRole(u);
+            UserTriggerHandler.usersAddedToRole(u);
     }
 
     for (User u : trigger.old){
         if (u.IsActive){
-            UserTriggerHelper.usersRemovedFromRole(u);
+            UserTriggerHandler.usersRemovedFromRole(u);
         }
     }
 

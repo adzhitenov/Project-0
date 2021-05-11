@@ -1,4 +1,4 @@
-public class UserTriggerHelper {
+public class UserTriggerHandler {
 
     public static void addPermissionSetToUser(User u, String permissionSetName){
 //        System.debug('Trigger fired!');

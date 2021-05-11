@@ -1,6 +1,6 @@
-public class RouteTriggerHelper {
+public class RouteTriggerHandler {
 
-    public static void addStopsToRoute(Route__c newRoute) {
+    public static List<Stop__c> addStopsToRoute(Route__c newRoute) {
 
         List <Stop__c> stopsToAdd = new List<Stop__c>();
 
@@ -9,6 +9,6 @@ public class RouteTriggerHelper {
             Stop__c newStop = new Stop__c(Name = stopName, Route_del__c = newRoute.Id, Stop_Number__c = iii);
             stopsToAdd.add(newStop);
         }
-        insert stopsToAdd;
+        return stopsToAdd;
     }
 }
